@@ -5,11 +5,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import it.polito.tdp.meteo.model.Rilevamento;
 
 public class MeteoDAO {
+	private  List<Rilevamento> result = new LinkedList<Rilevamento>();
 	
 	public List<Rilevamento> getAllRilevamenti() {
 
@@ -38,10 +43,47 @@ public class MeteoDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public Set<String> AllLocalità()
+	{return getAllRilevamenti().stream().map(s->s.getLocalita()).collect(Collectors.toSet());}
+		
+	public  List<Rilevamento> calcolaAvarage(int mese) {
+		
+		for(String s : AllLocalità())
+		{
+			double media = media(mese, s);
+		Rilevamento r = new Rilevamento(s, media);
+		//System.out.println(r.getLocalita() + " media :" +r.getMedia() +"\n");
+
+		this.result.add(r);
+		}
+		return result;
+		
+	}
+	public double media(int mese,String loc)
+	{
+		double media =getAllRilevamentiLocalitaMese(mese, loc).stream().mapToDouble(t-> t.getUmidita()).average().
+				getAsDouble();
+		return media;
+	}
 
 	public List<Rilevamento> getAllRilevamentiLocalitaMese(int mese, String localita) {
 
-		return null;
+		
+		 List<Rilevamento> a = getAllRilevamenti().stream().filter(t->t.getLocalita().equals(localita)).
+				 filter(t-> controlloData(mese, t.getData())).
+		 collect(Collectors.toList());
+		
+		
+		 return a;
+		
+	}
+	
+	public boolean controlloData(int mese,Date data)
+	{
+		if(data.getMonth()== mese-1)
+		return true;
+		return false;
 	}
 
 

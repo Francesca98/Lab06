@@ -1,5 +1,6 @@
 package it.polito.tdp.meteo.model;
 
+import java.time.Month;
 import java.util.Date;
 
 public class Rilevamento {
@@ -7,11 +8,22 @@ public class Rilevamento {
 	private String localita;
 	private Date data;
 	private int umidita;
+	private double media;
+	
+	
 
 	public Rilevamento(String localita, Date data, int umidita) {
 		this.localita = localita;
 		this.data = data;
 		this.umidita = umidita;
+	}
+	
+	
+
+	public Rilevamento(String s, double media) {
+		this.localita = s;
+
+		this.media = media;
 	}
 
 	public String getLocalita() {
@@ -48,6 +60,17 @@ public class Rilevamento {
 		return String.valueOf(umidita);
 	}
 
-	
+
+	 public String toStringSS() {
+     return localita + " " + data + " " + umidita;
+ }
+
+	 public String toStringSSMedia() {
+	     return localita + " media " + media;
+	 }
+
+	public double getMedia() {
+		return media;
+	}
 
 }
